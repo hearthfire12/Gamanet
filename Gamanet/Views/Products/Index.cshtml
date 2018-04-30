@@ -1,0 +1,89 @@
+﻿@model IEnumerable<Gamanet.Models.OutputProduct>
+
+@{
+    ViewBag.Title = "SelectedCompany";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Companies</h2>
+
+<div>
+    <!-- Create Link -->
+    <p class="btn btn-default"
+       style="margin-bottom:10px; display:inline-block; float:left;">
+        @Html.ActionLink("Create New", "Create")
+    </p>
+    <!-- Companies Dropdown -->
+    <div class="dropdown"
+         style="display:inline-block; float: left; margin-left:1%;">
+        <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+            Cmpanies
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu"
+            style="overflow-y:scroll; max-height:300px;">
+            <li>@Html.ActionLink("None", "Index", new { sortOrder=ViewBag.CurrentSort, companyName = ViewBag.NoCompany, category= ViewBag.CurrentCategory })</li>
+            @foreach (var company in new Gamanet.Models.ETL.DataStorage().GetListOfProducts().Where(p => p.CompanyName != null).Select(p => p.CompanyName).Distinct())
+            {
+                <li>@Html.ActionLink(company, "Index", new { sortOrder= ViewBag.CurrentSort,companyName = company, category = ViewBag.CurrentCategory })</li>
+            }
+        </ul>
+    </div>
+    <!-- Search form -->
+    <form asp-controller="Movies" asp-action="Index" style="">
+        <p>
+            <h3 style="margin:4px; margin-left:100px; padding:0;display:inline-block;float:left; ">Title</h3>
+            <input class="form-control" type="text" name="category" value="@ViewBag.CurrentCategory"
+                   style="display: inline-block;" />
+            <input class="btn btn-default" type="submit" name="@ViewBag.CurrentSort,@ViewBag.CurrentFilter" value="Search"
+                   style="color: #2A79B8;" />
+        </p>
+    </form>
+</div>
+
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.ActionLink("Company Name", "Index", new { sortOrder = ViewBag.NameSortParm, companyName = ViewBag.CurrentFilter, category = ViewBag.CurrentCategory })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Version)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ReleasedOn)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Category)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.CompanyName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ProductName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Version)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReleasedOn)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Category)
+        </td>
+        <td>
+            @Html.ActionLink("Details", "Details", new { productId = item.ProductId })
+        </td>
+    </tr>
+    }
+
+</table>
